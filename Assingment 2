@@ -1,0 +1,107 @@
+Assingment 2 Statistics One 2013
+ 
+library(psych)
+library(ms)
+
+#1 How many rows of impact are in the impact file?
+impact <- read.table("Stats1.13.HW.02.txt", header = T)
+nrow(impact)
+
+#2What is the name of the dependent variable?
+names(impact)
+head(impact)
+summary(impact)
+str(impact)
+
+#3 What is the mean of SR across all subjects?
+mean(data$SR) OR describe(data)
+
+#4 What is the variance of SR across all subjects?
+var(data$SR) OR 2.56^2
+
+#5 What is the mean of SR for all subjects at pretest?
+pre = subset(data, data$time=="pre") THEN mean(pre$SR)
+
+#6 What is the standard deviation of SR for all subjects at posttest?
+post = subset(data, data$time=="post") THEN sd(post$SR)
+describe(post$SR) AND median(post$SR)
+
+#7 What is the median of SR for all subjects at posttest?
+
+#8 Which group has the highest mean at posttest?
+pre.wm = subset(pre, pre$condition=="WM")
+post.wm = subset(post, post$condition=="WM")
+pre.pe = subset(pre, pre$condition=="PE")
+post.pe = subset(post, post$condition=="PE")
+pre.ds = subset(pre, pre$condition=="DS")
+post.ds = subset(post, post$condition=="DS")
+mean(post.wm$SR)-mean(pre.wm$SR)
+mean(post.pe$SR)-mean(pre.pe$SR)
+mean(post.ds$SR)-mean(pre.ds$SR)
+
+#9 Which one best approximates a normal distribution?
+pre.wm = subset(pre, pre$condition=="WM")
+post.wm = subset(post, post$condition=="WM")
+pre.pe = subset(pre, pre$condition=="PE")
+post.pe = subset(post, post$condition=="PE")
+pre.ds = subset(pre, pre$condition=="DS")
+post.ds = subset(post, post$condition=="DS")
+hist(pre.wm)
+hist(post.wm) 
+hist(pre.pe)
+hist(post.pe)
+hist(pre.ds)
+hist(post.ds)
+
+#10 Which group showed the biggest gains in SR? 
+v <- aggregate(impact["SR"],by=list(group=impact$condition,time=impact$time), mean)
+pre <- v$time == "pre"
+v$SR[pre] = -v$SR[pre]
+vt <- aggregate(list(diff.SR=v$SR),by=list(group=v$group), sum)
+vt[which(vt$diff.SR==max(vt$diff.SR)),]
+  
+
+pre.wm = subset(pre, pre$condition=="WM")
+post.wm = subset(post, post$condition=="WM")
+pre.pe = subset(pre, pre$condition=="PE")
+post.pe = subset(post, post$condition=="PE")
+pre.ds = subset(pre, pre$condition=="DS")
+post.ds = subset(post, post$condition=="DS")
+mean(post.wm$SR)-mean(pre.wm$SR)
+mean(post.pe$SR)-mean(pre.pe$SR)
+mean(post.ds$SR)-mean(pre.ds$SR)
+
+
+
+v <- aggregate(impact["SR"],by=list(group=impact$condition,time=impact$time), mean)
+pre <- v$time == "pre"
+v$SR[pre] = -v$SR[pre]
+vt <- aggregate(list(diff.SR=v$SR),by=list(group=v$group), sum)
+vt[which(vt$diff.SR==max(vt$diff.SR)),]
+
+cogimprov <- read.table("Stats1.13.HW.02.txt", header = T)
+comatrix <- matrix(cogimprov$SR, 16, 6)
+coimpact <- impact.frame(comatrix)
+names(coimpact) <- c("WMpre", "PEpre", "DSpre", "WMpost", "PEpost", "DSpost")
+multi.hist(coimpact)
+
+x <- impact.frame(wm.pre=impact[which(impact$time=='pre' & impact$condition=="WM"),"SR"],
+                wm.post = impact[which(impact$time=='post' & impact$condition=="WM"),"SR"],
+                pe.pre = impact[which(impact$time=='pre' & impact$condition=="PE"),"SR"],
+                pe.post = impact[which(impact$time=='post' & impact$condition=="PE"),"SR"],
+                ds.pre = impact[which(impact$time=='pre' & impact$condition=="DS"),"SR"],
+                ds.post = impact[which(impact$time=='post' & impact$condition=="DS"),"SR"])
+mystats <- function(x, na.omit=FALSE){
+  if (na.omit)
+    x <- x[!is.na(x)]
+  m <- mean(x)
+  md <- median(x)
+  n <- length(x)
+  s <- sd(x)
+  df <- abs(m-md)
+  return(c(n=n, mean=m, median=md, diff=df, sd=s))
+}
+xt <- sapply(x, mystats)
+xtt <- xt[4,]
+xtu <- xt[5,]
+colnames(xt)[intersect(which(xtt %in% min(xtt)),which(xtu %in% min(xtu)))]
