@@ -1,0 +1,58 @@
+#Assignment 3 Statistics One 2013
+#Question 1
+What is the correlation between S1 and S2 pre-training?
+cor(impact[3:8])
+cor(impact$S1.pre, impact$S2.pre)
+
+#Question 2
+What is the correlation between V1 and V2 pre-training?
+cor(impact$V1.pre, impact$V2.pre)
+
+#Question 3
+With respect to the measurement of two distinct constructs, spatial reasoning and verbal reasoning, the pattern of correlations pre-training reveals:
+impact$S.pre = (impact$S1.pre + impact$S2.pre) / 2
+impact$V.pre = (impact$V1.pre + impact$V2.pre) / 2
+cor(impact$S.pre, impact$V.pre)
+
+#Question 4
+Correlations from the control group could be used to estimate test/retest reliability. If so, which test is most reliable?
+impact.aer = subset(impact, impact$cond=="aer")
+cor(impact.aer$S1.pre, impact.aer$S1.post)
+cor(impact.aer$S2.pre, impact.aer$S2.post)
+cor(impact.aer$V1.pre, impact.aer$V1.post)
+cor(impact.aer$V2.pre, impact.aer$V2.post)
+
+#Question 5
+Does there appear to be a correlation between spatial reasoning before training and the amount of improvement in spatial reasoning?
+impact$S.pre = (impact$S1.pre + impact$S2.pre) / 2
+impact$V.pre = (impact$V1.pre + impact$V2.pre) / 2
+impact$S.post = (impact$S1.post + impact$S2.post) / 2
+impact$V.post = (impact$V1.post + impact$V2.post) / 2
+impact$Sgain = impact$S.post - impact$S.pre
+impact$Vgain = impact$V.post - impact$V.pre
+cor(impact$S.pre, impact$Sgain)
+
+#Does there appear to be a correlation between verbal reasoning before training and the amount of improvement in verbal reasoning?
+cor(impact$V.pre, impact$Vgain)
+
+# Question 7
+Which group exhibited more improvement in spatial reasoning?
+library(psych) 
+describeBy(impact$Sgain, impact$cond)
+
+#Question 8
+Create a color scatterplot matrix for all 4 measures at pre-test. Do the scatterplots suggest two reliable and valid constructs?
+
+library(gclus)
+pre.r = abs(cor(pre = cbind(impact[3], impact[4], impact[7], impact[8])))
+cpairs(pre, order.single(pre.r), panel.colors = dmat.color(pre.r), gap=.5)
+
+#Question 9
+Create a color scatterplot matrix for all 4 measures at post-test. Do the scatterplots suggest two reliable and valid constructs?
+post.r = abs(cor(post = cbind(impact[5], impact[6], impact[9], impact[10])))
+cpairs(post, order.single(post.r), panel.colors = dmat.color(post.r), gap=.5)
+
+#Question 10
+What is the major change from pre-test to post-test visible on the color matrix?
+
+cf both scatterplot matrices
